@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Song Rank Maker</string>
+    <string name="activity_main_label">Home</string>
+    <string name="activity_song_database_label">Song Database</string>
+    <string name="activity_add_song_label">Add Song</string>
+    <string name="activity_edit_song_label">Edit Song</string>
+
+    <string name="activity_main_button_song_database">Song Database</string>
+    <string name="activity_main_button_rankings">Rankings</string>
+    <string name="menu_float_song_database_search_in_youtube">Search in Youtube</string>
+    <string name="menu_float_song_database_delete">Delete</string>
+    <string name="menu_float_song_database_edit">Edit</string>
+    <string name="activity_add_song_textview_song_title">Song Title</string>
+    <string name="activity_add_song_textview_song_artist">Artist</string>
+    <string name="activity_add_song_button_add_song">Add Song</string>
+    <string name="activity_edit_song_textview_song_title">Song Title</string>
+    <string name="activity_edit_song_textview_song_artist">Artist</string>
+    <string name="activity_edit_song_button_add_song">Edit Song</string>
+</resources>

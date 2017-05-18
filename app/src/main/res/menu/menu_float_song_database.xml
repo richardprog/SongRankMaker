@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuItemEdit"
+        android:title="@string/menu_float_song_database_edit" />
+    <item
+        android:id="@+id/menuItemDelete"
+        android:title="@string/menu_float_song_database_delete" />
+    <item
+        android:id="@+id/menuItemSearchInYoutube"
+        android:title="@string/menu_float_song_database_search_in_youtube" />
+</menu>
