@@ -32,7 +32,7 @@ public class AddSongActivity extends AppCompatActivity {
 
         final List<String> spinnerList = new ArrayList<String>();
         DBHandler db = new DBHandler(this, null, null, 1);
-        List<String> songList = db.retrieveAllSongArtistDistinct(true);
+        List<String> songList = db.retrieveAllSongArtistSortDistinct();
 
         spinnerList.add(getString(R.string.activity_add_song_spinner_existing_artist_default));
         for (String songArtistEach : songList){

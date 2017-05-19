@@ -1,5 +1,7 @@
 package com.example.exoest.songrankmaker.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -76,13 +78,13 @@ public class SongDatabaseActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.menuItemEdit:
                 editSong(info);
                 return true;
             case R.id.menuItemDelete:
-                deleteSong(info);
+                displayDeleteConfirmation(info);
                 return true;
             case R.id.menuItemSearchInYoutube:
                 searchInYoutube(info);
@@ -114,6 +116,28 @@ public class SongDatabaseActivity extends AppCompatActivity {
         Song songForEdit = retrievedSongList.get(info.position);
         intent.putExtra("songid", String.valueOf(songForEdit.get_id()));
         startActivity(intent);
+    }
+
+    public void displayDeleteConfirmation(final AdapterView.AdapterContextMenuInfo info){
+        AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
+        deleteDialog.setTitle("Delete Song");
+        deleteDialog.setMessage("Are you sure you want to delete this song?");
+        deleteDialog.setIcon(android.R.drawable.ic_delete);
+        deleteDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteSong(info);
+                dialog.dismiss();
+            }
+        });
+        deleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog createDialog = deleteDialog.create();
+        createDialog.show();
     }
 
     public void deleteSong(AdapterView.AdapterContextMenuInfo info){

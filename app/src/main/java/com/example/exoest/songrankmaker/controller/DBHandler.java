@@ -206,13 +206,11 @@ public class DBHandler extends SQLiteOpenHelper {
         return songList;
     }
 
-    public List<String> retrieveAllSongArtistDistinct(boolean isArtistSort){
+    public List<String> retrieveAllSongArtistSortDistinct(){
         List<String> songArtistList = new ArrayList<String>();
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT DISTINCT " + COLUMN_ARTIST + " FROM " + TABLE_SONG;
-        if (isArtistSort)
-            query += " ORDER BY " + COLUMN_ARTIST;
-        query += ";";
+        String query = "SELECT DISTINCT " + COLUMN_ARTIST + " FROM " + TABLE_SONG +
+                " ORDER BY " + COLUMN_ARTIST + ";";
 
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
@@ -227,20 +225,23 @@ public class DBHandler extends SQLiteOpenHelper {
         return songArtistList;
     }
 
-    public void updateSongByName(String name, Song newSong){
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("UPDATE " + TABLE_SONG +
-                " SET " + COLUMN_NAME + " = \"" + newSong.get_name() + "\" " +
-                " WHERE " + COLUMN_NAME + " = \"" + name + "\";");
-        db.close();
-    }
-
     public void updateSongAsWholeById(int id, Song newSong){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("UPDATE " + TABLE_SONG +
                 " SET " + COLUMN_NAME + " = \"" + newSong.get_name() + "\", " +
                 COLUMN_ARTIST + " = \"" + newSong.get_artist() + "\"" +
                 " WHERE " + COLUMN_ID + " = " + id + ";");
+        db.execSQL("UPDATE " + TABLE_SONG +
+                " SET " + COLUMN_ARTIST + " = \"" + newSong.get_artist() + "\"" +
+                " WHERE " + COLUMN_ARTIST + " = " + id + ";");
+        db.close();
+    }
+
+    public void updateCommonSongArtist(String oldSongArtist, String newSongArtist){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("UPDATE " + TABLE_SONG +
+                " SET " + COLUMN_ARTIST + " = \"" + newSongArtist + "\"" +
+                " WHERE " + COLUMN_ARTIST + " = \"" + oldSongArtist + "\";");
         db.close();
     }
 

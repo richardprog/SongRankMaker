@@ -29,7 +29,10 @@
             android:name=".view.EditSongActivity"
             android:label="@string/activity_edit_song_label"
             android:parentActivityName=".view.SongDatabaseActivity" />
-        <activity android:name=".view.SettingsActivity"></activity>
+        <activity
+            android:name=".view.SettingsActivity"
+            android:label="@string/activity_settings_label"
+            android:parentActivityName=".view.MainActivity"/>
     </application>
 
 </manifest>
