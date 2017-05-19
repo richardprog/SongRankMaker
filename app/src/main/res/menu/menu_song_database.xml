@@ -6,7 +6,7 @@
         android:id="@+id/menuItemAddSong"
         android:enabled="true"
         android:icon="@android:drawable/ic_input_add"
-        android:title="Add"
+        android:title="@string/menu_song_database_add"
         android:visible="true"
         app:showAsAction="always" />
 </menu>

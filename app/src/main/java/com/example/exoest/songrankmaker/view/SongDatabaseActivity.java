@@ -1,7 +1,9 @@
 package com.example.exoest.songrankmaker.view;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -22,6 +24,8 @@ import java.util.List;
 public class SongDatabaseActivity extends AppCompatActivity {
     ListView listViewSongDatabase;
     List<Song> retrievedSongList = new ArrayList<Song>();
+    private static boolean isSortArtist = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +33,10 @@ public class SongDatabaseActivity extends AppCompatActivity {
 
         listViewSongDatabase = (ListView) findViewById(R.id.listViewSongDatabase);
 
-        refreshList();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        isSortArtist = sharedPreferences.getBoolean("sortArtist", false);
+
+        refreshList(isSortArtist);
 //        listViewSongDatabase.setOnItemLongClickListener(
 //                new AdapterView.OnItemLongClickListener(){
 //                    @Override
@@ -85,9 +92,9 @@ public class SongDatabaseActivity extends AppCompatActivity {
         }
     }
 
-    public void refreshList(){
+    public void refreshList(boolean isArtistSort){
         DBHandler db = new DBHandler(this, null, null, 1);
-        retrievedSongList = db.retrieveAllSong();
+        retrievedSongList = db.retrieveAllSong(isArtistSort);
         if (!retrievedSongList.isEmpty()){
             ListAdapter songDatabaseAdapter = new SongDatabaseListAdapter(this, R.layout.custom_row_song_database, retrievedSongList);
             ListView listViewSongDatabase = (ListView) findViewById(R.id.listViewSongDatabase);
@@ -99,7 +106,7 @@ public class SongDatabaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        refreshList();
+        refreshList(isSortArtist);
     }
 
     public void editSong(AdapterView.AdapterContextMenuInfo info){
@@ -113,7 +120,7 @@ public class SongDatabaseActivity extends AppCompatActivity {
         Song songForDelete = retrievedSongList.get(info.position);
         DBHandler db = new DBHandler(this, null, null, 1);
         db.deleteSong(songForDelete.get_name());
-        refreshList();
+        refreshList(isSortArtist);
     }
 
     public void searchInYoutube(AdapterView.AdapterContextMenuInfo info){

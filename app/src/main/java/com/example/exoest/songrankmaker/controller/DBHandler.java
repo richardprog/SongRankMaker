@@ -181,10 +181,14 @@ public class DBHandler extends SQLiteOpenHelper {
         return song;
     }
 
-    public List<Song> retrieveAllSong(){
+    public List<Song> retrieveAllSong(boolean isSort){
         List<Song> songList = new ArrayList<Song>();
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_SONG + ";";
+        String query = "SELECT * FROM " + TABLE_SONG;
+        if (isSort){
+            query += " ORDER BY " + COLUMN_ARTIST + ", " + COLUMN_NAME;
+        }
+        query += ";";
 
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
@@ -200,6 +204,27 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         db.close();
         return songList;
+    }
+
+    public List<String> retrieveAllSongArtistDistinct(boolean isArtistSort){
+        List<String> songArtistList = new ArrayList<String>();
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT DISTINCT " + COLUMN_ARTIST + " FROM " + TABLE_SONG;
+        if (isArtistSort)
+            query += " ORDER BY " + COLUMN_ARTIST;
+        query += ";";
+
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+
+        while(!c.isAfterLast()){
+            if (c.getString(c.getColumnIndex(COLUMN_ARTIST))!=null){
+                songArtistList.add(c.getString(c.getColumnIndex(COLUMN_ARTIST)));
+                c.moveToNext();
+            }
+        }
+        db.close();
+        return songArtistList;
     }
 
     public void updateSongByName(String name, Song newSong){

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Song Rank Maker</string>
-    <string name="activity_main_label">Home</string>
+    <string name="activity_main_label">Song Rank Maker - Home</string>
     <string name="activity_song_database_label">Song Database</string>
     <string name="activity_add_song_label">Add Song</string>
     <string name="activity_edit_song_label">Edit Song</string>
@@ -16,4 +16,9 @@
     <string name="activity_edit_song_textview_song_title">Song Title</string>
     <string name="activity_edit_song_textview_song_artist">Artist</string>
     <string name="activity_edit_song_button_add_song">Edit Song</string>
+    <string name="menu_song_database_add">Add</string>
+    <string name="menu_song_database_sort_title">Sort Title</string>
+    <string name="preferences_sort_artist">Sort Song Artist in Ascending Order</string>
+    <string name="activity_main_button_settings">Settings</string>
+    <string name="activity_add_song_spinner_existing_artist_default">= Select Artist =</string>
 </resources>
