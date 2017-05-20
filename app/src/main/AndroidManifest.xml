@@ -32,7 +32,15 @@
         <activity
             android:name=".view.SettingsActivity"
             android:label="@string/activity_settings_label"
+            android:parentActivityName=".view.MainActivity" />
+        <activity
+            android:name=".view.RankingsActivity"
+            android:label="@string/activity_rankings_label"
             android:parentActivityName=".view.MainActivity"/>
+        <activity
+            android:name=".view.AddRankingActivity"
+            android:label="@string/activity_add_ranking_label"
+            android:parentActivityName=".view.RankingsActivity"/>
     </application>
 
 </manifest>

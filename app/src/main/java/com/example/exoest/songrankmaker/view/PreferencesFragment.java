@@ -17,14 +17,16 @@ import com.example.exoest.songrankmaker.R;
 
 public class PreferencesFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     View view;
-    SwitchPreference switchPreference;
+    SwitchPreference switchPreferenceSortArtist;
+    SwitchPreference switchPreferenceSortRankingName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        switchPreference = (SwitchPreference) findPreference("sortArtist");
-        switchPreference.setOnPreferenceChangeListener(
+        switchPreferenceSortArtist = (SwitchPreference) findPreference("sortArtist");
+        switchPreferenceSortRankingName = (SwitchPreference) findPreference("sortRankingName");
+        switchPreferenceSortArtist.setOnPreferenceChangeListener(
                 new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -38,14 +40,24 @@ public class PreferencesFragment extends PreferenceFragment implements SharedPre
                     }
                 }
         );
+        switchPreferenceSortRankingName.setOnPreferenceChangeListener(
+                new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        String toastMsg = "";
+                        if ((Boolean) newValue)
+                            toastMsg = getString(R.string.preferences_sort_ranking_name_toast_true);
+                        else
+                            toastMsg = getString(R.string.preferences_sort_ranking_name_toast_false);
+                        Toast.makeText(getActivity(), toastMsg, Toast.LENGTH_LONG).show();
+                        return true;
+                    }
+                }
+        );
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("sortArtist")){
-            if (sharedPreferences.getBoolean("sortArtist", false)) {
-                Toast.makeText(view.getContext(), "Song artist sorted.", Toast.LENGTH_LONG).show();
-            }
-        }
+
     }
 }

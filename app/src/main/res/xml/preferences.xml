@@ -4,7 +4,9 @@
     <SwitchPreference
         android:defaultValue="false"
         android:key="sortArtist"
-        android:switchTextOff="Back to Default"
-        android:switchTextOn="Sorted"
         android:title="@string/preferences_sort_artist" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="sortRankingName"
+        android:title="@string/preferences_sort_ranking_name" />
 </PreferenceScreen>

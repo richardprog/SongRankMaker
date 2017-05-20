@@ -100,10 +100,14 @@ public class DBHandler extends SQLiteOpenHelper {
         return ranking;
     }
 
-    public List<Ranking> retrieveAllRanking(){
+    public List<Ranking> retrieveAllRanking(boolean isSort){
         List<Ranking> rankingList = new ArrayList<Ranking>();
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_RANKING + ";";
+        String query = "SELECT * FROM " + TABLE_RANKING;
+        if (isSort){
+            query += " ORDER BY " + COLUMN_NAME;
+        }
+        query += ";";
 
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
@@ -120,11 +124,11 @@ public class DBHandler extends SQLiteOpenHelper {
         return rankingList;
     }
 
-    public void updateRankingByName(String name, Ranking newRanking){
+    public void updateRankingById(int id, Ranking newRanking){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("UPDATE " + TABLE_RANKING +
                 " SET " + COLUMN_NAME + " = \"" + newRanking.get_name() + "\" " +
-                " WHERE " + COLUMN_NAME + " = \"" + name + "\";");
+                " WHERE " + COLUMN_ID + " = " + id + ";");
         db.close();
     }
 
@@ -269,6 +273,19 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.insert(TABLE_RANKINGSONG, null, values);
         db.close();
+    }
+
+    public int retrieveSongCountByRankingId(int id){
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT COUNT(" + COLUMN_ID + ") AS NUM" +
+                " FROM " + TABLE_RANKINGSONG +
+                " WHERE " + COLUMN_RANKINGID + " = " + id + ";";
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+
+        int songCount = c.getInt(c.getColumnIndex("NUM"));
+        db.close();
+        return songCount;
     }
 
 //    public RankingSong retrieveRankingSongById(int id){

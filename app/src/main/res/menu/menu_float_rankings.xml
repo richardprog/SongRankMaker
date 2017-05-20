@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuItemShowRanking"
+        android:enabled="true"
+        android:title="@string/menu_float_rankings_show_ranking"
+        android:visible="true" />
+    <item
+        android:id="@+id/menuItemEditRankingName"
+        android:title="@string/menu_float_rankings_edit_ranking_name" />
+    <item
+        android:id="@+id/menuItemDeleteRanking"
+        android:title="@string/menu_float_rankings_delete_ranking" />
+</menu>

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.exoest.songrankmaker.R;
 import com.example.exoest.songrankmaker.controller.DBHandler;
@@ -39,15 +40,6 @@ public class SongDatabaseActivity extends AppCompatActivity {
         isSortArtist = sharedPreferences.getBoolean("sortArtist", false);
 
         refreshList(isSortArtist);
-//        listViewSongDatabase.setOnItemLongClickListener(
-//                new AdapterView.OnItemLongClickListener(){
-//                    @Override
-//                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                        Toast.makeText(SongDatabaseActivity.this, "You had long clicked.", Toast.LENGTH_LONG).show();
-//                        return true;
-//                    }
-//                }
-//        );
     }
 
     @Override
@@ -99,9 +91,17 @@ public class SongDatabaseActivity extends AppCompatActivity {
         retrievedSongList = db.retrieveAllSong(isArtistSort);
         if (!retrievedSongList.isEmpty()){
             ListAdapter songDatabaseAdapter = new SongDatabaseListAdapter(this, R.layout.custom_row_song_database, retrievedSongList);
-            ListView listViewSongDatabase = (ListView) findViewById(R.id.listViewSongDatabase);
+//            final ListView listViewSongDatabase = (ListView) findViewById(R.id.listViewSongDatabase);
             listViewSongDatabase.setAdapter(songDatabaseAdapter);
             registerForContextMenu(findViewById(R.id.listViewSongDatabase));
+            listViewSongDatabase.setOnItemClickListener(
+                    new AdapterView.OnItemClickListener(){
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            listViewSongDatabase.showContextMenuForChild(view);
+                        }
+                    }
+            );
         }
     }
 
@@ -121,8 +121,8 @@ public class SongDatabaseActivity extends AppCompatActivity {
     public void displayDeleteConfirmation(final AdapterView.AdapterContextMenuInfo info){
         AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
         deleteDialog.setTitle("Delete Song");
-        deleteDialog.setMessage("Are you sure you want to delete this song?");
-        deleteDialog.setIcon(android.R.drawable.ic_delete);
+        deleteDialog.setMessage(getString(R.string.activity_song_database_delete_song_dialog_message));
+        deleteDialog.setIcon(android.R.drawable.ic_menu_delete);
         deleteDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -144,6 +144,7 @@ public class SongDatabaseActivity extends AppCompatActivity {
         Song songForDelete = retrievedSongList.get(info.position);
         DBHandler db = new DBHandler(this, null, null, 1);
         db.deleteSong(songForDelete.get_name());
+        Toast.makeText(this, "\"" + songForDelete.get_name() + "\" has been deleted.", Toast.LENGTH_LONG).show();
         refreshList(isSortArtist);
     }
 

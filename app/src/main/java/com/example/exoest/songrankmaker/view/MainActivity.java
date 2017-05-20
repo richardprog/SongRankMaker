@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickButtonRanking(View view){
-        Intent intent = new Intent(this, SongDatabaseActivity.class);
+        Intent intent = new Intent(this, RankingsActivity.class);
         startActivity(intent);
     }
 

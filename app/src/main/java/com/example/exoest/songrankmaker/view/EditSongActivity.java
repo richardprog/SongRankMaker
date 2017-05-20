@@ -14,6 +14,7 @@ public class EditSongActivity extends AppCompatActivity {
     private EditText editTextEditSongTitle;
     private EditText editTextEditSongArtist;
     private int songId = 0;
+    private String oldSongTitle = "";
     private String oldArtist = "";
 
     @Override
@@ -29,6 +30,7 @@ public class EditSongActivity extends AppCompatActivity {
 
         DBHandler db = new DBHandler(this, null, null, 1);
         Song song = db.retrieveSongById(songId);
+        oldSongTitle = song.get_name();
         oldArtist = song.get_artist();
 
         editTextEditSongTitle.setText(song.get_name());
@@ -45,7 +47,7 @@ public class EditSongActivity extends AppCompatActivity {
         db.updateSongAsWholeById(songId, newSong);
         db.updateCommonSongArtist(oldArtist, newSong.get_artist());
 
-        Toast.makeText(this, "\"" + newSongTitle + "\" info has been updated.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "\"" + oldSongTitle + "\" info has been updated to \"" + newSongTitle + "\".", Toast.LENGTH_LONG).show();
         finish();
     }
 }

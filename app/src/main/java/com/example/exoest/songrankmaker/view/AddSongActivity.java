@@ -67,7 +67,7 @@ public class AddSongActivity extends AppCompatActivity {
         DBHandler db = new DBHandler(this, null, null, 1);
         Song newSong = new Song(songTitle, songArtist);
         db.createSong(newSong);
-        Toast.makeText(this, "\"" + songTitle + "\" has been added to the list.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "\"" + songTitle + "\" " + getString(R.string.activity_add_song_button_add_song_toast), Toast.LENGTH_LONG).show();
         finish();
     }
 }
