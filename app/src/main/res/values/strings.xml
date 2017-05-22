@@ -8,6 +8,7 @@
     <string name="activity_settings_label">Settings</string>
     <string name="activity_rankings_label">Ranking List</string>
     <string name="activity_add_ranking_label">Add Ranking</string>
+    <string name="activity_view_ranking_label">Ranking</string>
 
     <!-- ACTIVITY -->
     <string name="activity_main_button_song_database">Song Database</string>
@@ -46,6 +47,7 @@
     <string name="activity_custom_row_rankings_song_count_desc">Number of Songs :</string>
     <string name="activity_song_database_delete_song_dialog_message">Are you sure you want to delete this song?</string>
     <string name="activity_rankings_delete_ranking_dialog_message">Are you sure you want to delete this ranking?</string>
+    <string name="menu_float_song_database_assign_rank">Assign Rank</string>
 
     <!-- NOT YET ARRANGED -->
 

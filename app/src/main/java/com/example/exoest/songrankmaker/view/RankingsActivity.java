@@ -113,7 +113,9 @@ public class RankingsActivity extends AppCompatActivity {
     }
 
     public void showRanking(AdapterView.AdapterContextMenuInfo info){
-
+        Intent intent = new Intent(this, ViewRankingActivity.class);
+        intent.putExtra("viewRankingId", String.valueOf(retrievedRankingList.get(info.position).get_id()));
+        startActivity(intent);
     }
 
     public void displayEditDialog(final AdapterView.AdapterContextMenuInfo info){

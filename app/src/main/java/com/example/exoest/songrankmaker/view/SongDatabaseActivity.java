@@ -13,12 +13,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.exoest.songrankmaker.R;
 import com.example.exoest.songrankmaker.controller.DBHandler;
+import com.example.exoest.songrankmaker.model.Ranking;
+import com.example.exoest.songrankmaker.model.RankingSong;
 import com.example.exoest.songrankmaker.model.Song;
 
 import java.util.ArrayList;
@@ -72,6 +77,9 @@ public class SongDatabaseActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
+            case R.id.menuItemAssignRank:
+                displayAssignToRankingDialog(info);
+                return true;
             case R.id.menuItemEdit:
                 editSong(info);
                 return true;
@@ -108,6 +116,57 @@ public class SongDatabaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        refreshList(isSortArtist);
+    }
+
+    public void displayAssignToRankingDialog(final AdapterView.AdapterContextMenuInfo info){
+        final AlertDialog.Builder assignToRankingDialog = new AlertDialog.Builder(this);
+        assignToRankingDialog.setTitle("Assign Song to Ranking");
+        assignToRankingDialog.setMessage("Select ranking :");
+
+        final Spinner spinnerRanking = new Spinner(this);
+        final List<String> spinnerList = new ArrayList<>();
+        DBHandler db = new DBHandler(this, null, null, 1);
+        final List<Ranking> rankingList = db.retrieveAllRanking(true);
+
+        spinnerList.add("= Choose a ranking =");
+        for (Ranking r : rankingList){
+            spinnerList.add(r.get_name());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
+        spinnerRanking.setAdapter(adapter);
+        spinnerRanking.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        assignToRankingDialog.setView(spinnerRanking);
+
+        assignToRankingDialog.setPositiveButton("Assign", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (spinnerRanking.getSelectedItemPosition() != 0){
+                    assignToRanking(info, rankingList.get(spinnerRanking.getSelectedItemPosition()-1));
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(SongDatabaseActivity.this, "Please select a ranking.", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+        assignToRankingDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog createDialog = assignToRankingDialog.create();
+        createDialog.show();
+    }
+
+    public void assignToRanking(AdapterView.AdapterContextMenuInfo info, Ranking rankingAssignTo){
+        Song songAssignFor = retrievedSongList.get(info.position);
+        DBHandler db = new DBHandler(this, null, null, 1);
+        RankingSong newRankingSong = new RankingSong(rankingAssignTo, songAssignFor, 0);
+        db.createRankingSong(newRankingSong);
+        Toast.makeText(this, "\"" + songAssignFor.get_name() + "\" has been assigned to \"" + rankingAssignTo.get_name() + "\".", Toast.LENGTH_LONG).show();
         refreshList(isSortArtist);
     }
 

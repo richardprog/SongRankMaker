@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorWindowBackground">#99CCFF</color>
+    <color name="color_custom_row_song_database_lightblue">#99CCFF</color>
+    <color name="color_custom_row_song_database_darkblue">#80bfff</color>
+    <color name="black">#000000</color>
 </resources>

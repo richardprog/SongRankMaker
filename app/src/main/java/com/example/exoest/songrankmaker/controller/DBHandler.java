@@ -288,6 +288,33 @@ public class DBHandler extends SQLiteOpenHelper {
         return songCount;
     }
 
+    public List<RankingSong> retrieveRankingSongByRankingIdWithSortedRank(int rankingId){
+        List<RankingSong> rankingSongList = new ArrayList<RankingSong>();
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT " + TABLE_SONG + "." + COLUMN_NAME + ", " + TABLE_SONG + "." + COLUMN_ARTIST + ", " + TABLE_RANKINGSONG + "." + COLUMN_RANK +
+                " FROM " + TABLE_RANKINGSONG +
+                " INNER JOIN " + TABLE_SONG + " ON " + TABLE_RANKINGSONG + "." + COLUMN_SONGID + " = " + TABLE_SONG + "." + COLUMN_ID +
+                " WHERE " + COLUMN_RANKINGID + " = " + rankingId +
+                " ORDER BY " + COLUMN_RANK + ";";
+
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+
+        while(!c.isAfterLast()){
+            if (c.getString(c.getColumnIndex(COLUMN_ARTIST))!=null){
+                RankingSong rankingSongSingle = new RankingSong(
+                        null,
+                        new Song(c.getString(c.getColumnIndex(COLUMN_NAME)), c.getString(c.getColumnIndex(COLUMN_ARTIST))),
+                        c.getInt(c.getColumnIndex(COLUMN_RANK))
+                );
+                rankingSongList.add(rankingSongSingle);
+                c.moveToNext();
+            }
+        }
+        db.close();
+        return rankingSongList;
+    }
+
 //    public RankingSong retrieveRankingSongById(int id){
 //        SQLiteDatabase db = getWritableDatabase();
 //        String query = "SELECT * FROM " + TABLE_RANKINGSONG + " WHERE " + COLUMN_ID + " = " + id + ";";

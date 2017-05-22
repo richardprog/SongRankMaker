@@ -4,11 +4,20 @@
 
     <item
         android:id="@+id/menuItemEdit"
+        android:orderInCategory="1"
         android:title="@string/menu_float_song_database_edit" />
     <item
         android:id="@+id/menuItemDelete"
+        android:orderInCategory="3"
         android:title="@string/menu_float_song_database_delete" />
     <item
+        android:id="@+id/menuItemAssignRank"
+        android:enabled="true"
+        android:orderInCategory="0"
+        android:title="@string/menu_float_song_database_assign_rank"
+        android:visible="true" />
+    <item
         android:id="@+id/menuItemSearchInYoutube"
+        android:orderInCategory="2"
         android:title="@string/menu_float_song_database_search_in_youtube" />
 </menu>

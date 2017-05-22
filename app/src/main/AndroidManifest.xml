@@ -10,7 +10,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".view.MainActivity"
-            android:label="@string/activity_main_label">
+            android:label="@string/activity_main_label"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,10 +37,14 @@
         <activity
             android:name=".view.RankingsActivity"
             android:label="@string/activity_rankings_label"
-            android:parentActivityName=".view.MainActivity"/>
+            android:parentActivityName=".view.MainActivity" />
         <activity
             android:name=".view.AddRankingActivity"
             android:label="@string/activity_add_ranking_label"
+            android:parentActivityName=".view.RankingsActivity" />
+        <activity
+            android:name=".view.ViewRankingActivity"
+            android:label="@string/activity_view_ranking_label"
             android:parentActivityName=".view.RankingsActivity"/>
     </application>
 
