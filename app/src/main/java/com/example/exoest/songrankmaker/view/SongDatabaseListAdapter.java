@@ -21,50 +21,46 @@ import java.util.List;
  */
 
 public class SongDatabaseListAdapter extends ArrayAdapter<Song> {
-    private static String prevSong = "";
-    private int darkBlue = ContextCompat.getColor(getContext(), R.color.color_custom_row_song_database_darkblue);
-    private int lightBlue = ContextCompat.getColor(getContext(), R.color.color_custom_row_song_database_lightblue);
-    private int currentBlue;
-
+    int selectedBg = ContextCompat.getColor(getContext(), R.color.color_custom_row_song_database_darkblue);
+    int nonselectedBg = ContextCompat.getColor(getContext(), R.color.color_custom_row_song_database_lightblue);
     public SongDatabaseListAdapter(@NonNull Context context, @LayoutRes int resource, List<Song> objects) {
         super(context, resource, objects);
-        currentBlue = lightBlue;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View songDatabaseCustomView;
-//        if (position == 0)
-//            currentBlue = ContextCompat.getColor(getContext(), R.color.black);
-//        if (convertView == null){
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        songDatabaseCustomView = inflater.inflate(R.layout.custom_row_song_database, parent, false);
-//        } else
-//        songDatabaseCustomView = convertView;
+        View view = convertView;
+        ViewHolder holder;
 
-        TextView textViewCustomRowSongTitle = (TextView) songDatabaseCustomView.findViewById(R.id.textViewCustomRowSongTitle);
-        TextView textViewCustomRowSongArtist = (TextView) songDatabaseCustomView.findViewById(R.id.textViewCustomRowSongArtist);
+        if (convertView == null){
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            view = inflater.inflate(R.layout.custom_row_song_database, parent, false);
 
-        String songTitle = getItem(position).get_name();
-        String songArtist = getItem(position).get_artist();
+            holder = new ViewHolder();
+            holder.textViewCustomRowSongTitle = (TextView) view.findViewById(R.id.textViewCustomRowSongTitle);
+            holder.textViewCustomRowSongArtist = (TextView) view.findViewById(R.id.textViewCustomRowSongArtist);
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
+        }
+        view.setBackgroundColor(nonselectedBg);
+        holder.textViewCustomRowSongTitle.setText(getItem(position).get_name());
+        holder.textViewCustomRowSongArtist.setText(getItem(position).get_artist());
+        if (getItem(position).isSelected())
+            view.setBackgroundColor(selectedBg);
+        else
+            view.setBackgroundColor(nonselectedBg);
 
-        textViewCustomRowSongTitle.setText(songTitle);
-        textViewCustomRowSongArtist.setText(songArtist);
+        return view;
+    }
 
-        // temporarily put aside due to list recycling
-//        if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("sortArtist", false)) {
-//            if (position != 0) {
-//                if (!getItem(position).get_artist().equals(getItem(position - 1).get_artist())) {
-//                    if (currentBlue == darkBlue)
-//                        currentBlue = lightBlue;
-//                    else
-//                        currentBlue = darkBlue;
-//                }
-//            }
-//        }
-//        songDatabaseCustomView.setBackgroundColor(currentBlue);
+    public void changeSelectionUponSelected(int position){
+        getItem(position).setSelected(!getItem(position).isSelected());
+    }
 
-        return songDatabaseCustomView;
+    public static class ViewHolder{
+        public TextView textViewCustomRowSongTitle;
+        public TextView textViewCustomRowSongArtist;
     }
 }

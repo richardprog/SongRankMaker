@@ -41,13 +41,18 @@ public class EditSongActivity extends AppCompatActivity {
         String newSongTitle = editTextEditSongTitle.getText().toString();
         String newSongArtist = editTextEditSongArtist.getText().toString();
 
-        DBHandler db = new DBHandler(this, null, null, 1);
-        Song newSong = new Song(newSongTitle, newSongArtist);
+        if (!newSongTitle.equals("") && !newSongArtist.equals("")){
+            DBHandler db = new DBHandler(this, null, null, 1);
+            Song newSong = new Song(newSongTitle, newSongArtist);
 
-        db.updateSongAsWholeById(songId, newSong);
-        db.updateCommonSongArtist(oldArtist, newSong.get_artist());
+            db.updateSongAsWholeById(songId, newSong);
+            db.updateCommonSongArtist(oldArtist, newSong.get_artist());
 
-        Toast.makeText(this, "\"" + oldSongTitle + "\" info has been updated to \"" + newSongTitle + "\".", Toast.LENGTH_LONG).show();
-        finish();
+            Toast.makeText(this, "\"" + oldSongTitle + "\" info has been updated to \"" + newSongTitle + "\".", Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            Toast.makeText(this, getString(R.string.activity_add_song_button_edit_song_null_toast), Toast.LENGTH_LONG).show();
+        }
+
     }
 }

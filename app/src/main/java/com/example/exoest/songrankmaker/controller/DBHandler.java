@@ -96,7 +96,6 @@ public class DBHandler extends SQLiteOpenHelper {
 
         Ranking ranking = new Ranking(c.getInt(c.getColumnIndex(COLUMN_ID)),
                 c.getString(c.getColumnIndex(COLUMN_NAME)));
-        db.close();
         return ranking;
     }
 
@@ -275,6 +274,20 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void createMultipleRankingSong(List<Song> songList, Ranking ranking){
+        SQLiteDatabase db = getWritableDatabase();
+        for (Song song : songList){
+            if (!isSongExisted(ranking, song)){
+                ContentValues values = new ContentValues();
+                values.put(COLUMN_RANKINGID, ranking.get_id());
+                values.put(COLUMN_SONGID, song.get_id());
+                values.put(COLUMN_RANK, 0);
+                db.insert(TABLE_RANKINGSONG, null, values);
+            }
+        }
+        db.close();
+    }
+
     public int retrieveSongCountByRankingId(int id){
         SQLiteDatabase db = getWritableDatabase();
         String query = "SELECT COUNT(" + COLUMN_ID + ") AS NUM" +
@@ -288,14 +301,19 @@ public class DBHandler extends SQLiteOpenHelper {
         return songCount;
     }
 
-    public List<RankingSong> retrieveRankingSongByRankingIdWithSortedRank(int rankingId){
+    public List<RankingSong> retrieveRankingSongByRankingId(int rankingId, boolean isRequestForUnranked){
         List<RankingSong> rankingSongList = new ArrayList<RankingSong>();
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT " + TABLE_SONG + "." + COLUMN_NAME + ", " + TABLE_SONG + "." + COLUMN_ARTIST + ", " + TABLE_RANKINGSONG + "." + COLUMN_RANK +
+        String query = "SELECT " + TABLE_SONG + "." + COLUMN_ID + ", " + TABLE_SONG + "." + COLUMN_NAME + ", " + TABLE_SONG + "." + COLUMN_ARTIST + ", " + TABLE_RANKINGSONG + "." + COLUMN_RANK +
                 " FROM " + TABLE_RANKINGSONG +
-                " INNER JOIN " + TABLE_SONG + " ON " + TABLE_RANKINGSONG + "." + COLUMN_SONGID + " = " + TABLE_SONG + "." + COLUMN_ID +
-                " WHERE " + COLUMN_RANKINGID + " = " + rankingId +
-                " ORDER BY " + COLUMN_RANK + ";";
+                " INNER JOIN " + TABLE_SONG + " ON " + TABLE_RANKINGSONG + "." + COLUMN_SONGID + " = " + TABLE_SONG + "." + COLUMN_ID;
+
+        if (!isRequestForUnranked)
+            query += " WHERE " + COLUMN_RANKINGID + " = " + rankingId + " AND " + COLUMN_RANK + " != " + 0 +
+                    " ORDER BY " + COLUMN_RANK + ";";
+        else
+            query += " WHERE " + COLUMN_RANKINGID + " = " + rankingId + " AND " + COLUMN_RANK + " = " + 0 + ";";
+
 
         Cursor c = db.rawQuery(query, null);
         c.moveToFirst();
@@ -304,7 +322,7 @@ public class DBHandler extends SQLiteOpenHelper {
             if (c.getString(c.getColumnIndex(COLUMN_ARTIST))!=null){
                 RankingSong rankingSongSingle = new RankingSong(
                         null,
-                        new Song(c.getString(c.getColumnIndex(COLUMN_NAME)), c.getString(c.getColumnIndex(COLUMN_ARTIST))),
+                        new Song(c.getInt(c.getColumnIndex(COLUMN_ID)), c.getString(c.getColumnIndex(COLUMN_NAME)), c.getString(c.getColumnIndex(COLUMN_ARTIST))),
                         c.getInt(c.getColumnIndex(COLUMN_RANK))
                 );
                 rankingSongList.add(rankingSongSingle);
@@ -315,70 +333,60 @@ public class DBHandler extends SQLiteOpenHelper {
         return rankingSongList;
     }
 
-//    public RankingSong retrieveRankingSongById(int id){
-//        SQLiteDatabase db = getWritableDatabase();
-//        String query = "SELECT * FROM " + TABLE_RANKINGSONG + " WHERE " + COLUMN_ID + " = " + id + ";";
-//
-//        Cursor c = db.rawQuery(query, null);
-//        c.moveToFirst();
-//
-//        RankingSong rankingSong = new RankingSong(c.getInt(c.getColumnIndex(COLUMN_ID)),
-//                retrieveRankingById(c.getInt(c.getColumnIndex(COLUMN_RANKINGID))),
-//                retrieveSongById(c.getInt(c.getColumnIndex(COLUMN_SONGID))),
-//                c.getInt(c.getColumnIndex(COLUMN_RANK)));
-//        return rankingSong;
-//    }
+    public int getRankingSongCountByRankingId(int rankingId){
+        int count = 0;
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT COUNT(" + COLUMN_ID + ") AS RSCOUNT" +
+                " FROM " + TABLE_RANKINGSONG +
+                " WHERE " + COLUMN_RANKINGID + " = " + rankingId + " AND " + COLUMN_RANK + " != " + 0 + ";";
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        while(!c.isAfterLast()){
+//            if (c.getString(c.getColumnIndex("RSCOUNT"))!=null)
+            count = c.getInt(c.getColumnIndex("RSCOUNT"));
+            c.moveToNext();
+        }
+        return count;
+    }
 
-//    public RankingSong retrieveRankingSongByName(String name){
-//        SQLiteDatabase db = getWritableDatabase();
-//        String query = "SELECT * FROM " + TABLE_RANKINGSONG + " WHERE " + COLUMN_NAME + " = \"" + name + "\";";
-//
-//        Cursor c = db.rawQuery(query, null);
-//        c.moveToFirst();
-//
-//        RankingSong rankingSong = new RankingSong(c.getInt(c.getColumnIndex(COLUMN_ID)),
-//                retrieveRankingById(c.getInt(c.getColumnIndex(COLUMN_RANKINGID))),
-//                retrieveSongById(c.getInt(c.getColumnIndex(COLUMN_SONGID))),
-//                c.getInt(c.getColumnIndex(COLUMN_RANK)));
-//        return rankingSong;
-//    }
-
-//    public List<RankingSong> retrieveAllRankingSong(){
-//        List<RankingSong> rankingSongList = new ArrayList<RankingSong>();
-//        SQLiteDatabase db = getWritableDatabase();
-//        String query = "SELECT * FROM " + TABLE_RANKINGSONG + ";";
-//
-//        Cursor c = db.rawQuery(query, null);
-//        c.moveToFirst();
-//
-//        while(!c.isAfterLast()){
-//            if (c.getString(c.getColumnIndex(COLUMN_RANKINGID))!=null){
-//                RankingSong rs = new RankingSong(c.getInt(c.getColumnIndex(COLUMN_ID)),
-//                        retrieveRankingById(c.getInt(c.getColumnIndex(COLUMN_RANKINGID))),
-//                        retrieveSongById(c.getInt(c.getColumnIndex(COLUMN_SONGID))),
-//                        c.getInt(c.getColumnIndex(COLUMN_RANK)));
-//                rankingSongList.add(rs);
-//                c.moveToNext();
-//            }
-//        }
-//        db.close();
-//        return rankingSongList;
-//    }
+    public boolean isSongExisted(Ranking ranking, Song song) {
+        boolean isExisted;
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT " + COLUMN_SONGID +
+                " FROM " + TABLE_RANKINGSONG +
+                " WHERE " + COLUMN_RANKINGID + " = " + ranking.get_id() +
+                " AND " + COLUMN_SONGID + " = " + song.get_id();
+        Cursor c = db.rawQuery(query, null);
+        c.moveToFirst();
+        if (c.isAfterLast())
+            isExisted = false;
+        else
+            isExisted = true;
+        return isExisted;
+    }
 
     public void updateRankByRankingIdAndSongId(Ranking ranking, Song song, int newRank){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("UPDATE " + TABLE_RANKINGSONG +
-                " SET " + COLUMN_RANK + " = " + newRank +
+                " SET " + COLUMN_RANK + " = " + String.valueOf(newRank) +
                 " WHERE " + COLUMN_RANKINGID + " = " + ranking.get_id() +
                 " AND " + COLUMN_SONGID + " = " + song.get_id() + ";");
         db.close();
     }
 
-    public void deleteRankingSong(Ranking ranking, Song song){
+    public void deleteRankingSong(RankingSong rankingSong, boolean isRerankRequired){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_RANKINGSONG +
-                " WHERE " + COLUMN_RANKINGID + " = " + ranking.get_id() +
-                " AND " + COLUMN_SONGID + " = " + song.get_id() + ";");
+                " WHERE " + COLUMN_RANKINGID + " = " + rankingSong.get_ranking().get_id() +
+                " AND " + COLUMN_SONGID + " = " + rankingSong.get_song().get_id() + ";");
+        if (isRerankRequired){
+            int count = getRankingSongCountByRankingId(rankingSong.get_ranking().get_id());
+            for (int i = rankingSong.get_rank(); i <= count; i++){
+                db.execSQL("UPDATE " + TABLE_RANKINGSONG +
+                        " SET " + COLUMN_RANK + " = " + i +
+                        " WHERE " + COLUMN_RANK + " = " + (i+1) + " AND " + COLUMN_RANKINGID + " = " + rankingSong.get_ranking().get_id() + ";");
+            }
+        }
         db.close();
     }
     // endregion

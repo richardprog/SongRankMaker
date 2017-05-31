@@ -47,7 +47,24 @@
     <string name="activity_custom_row_rankings_song_count_desc">Number of Songs :</string>
     <string name="activity_song_database_delete_song_dialog_message">Are you sure you want to delete this song?</string>
     <string name="activity_rankings_delete_ranking_dialog_message">Are you sure you want to delete this ranking?</string>
-    <string name="menu_float_song_database_assign_rank">Assign Rank</string>
+    <string name="menu_song_database_assign_rank">Assign Rank</string>
+    <string name="menu_view_ranking_rearrange_all">Rearrange All</string>
+    <string name="menu_view_ranking_finish_rearranging">Finish Rearranging</string>
+    <string name="activity_view_ranking_toast_rearrange_all">Please click multiple song from first to last.</string>
+    <string name="activity_view_ranking_toast_finish_rearranging">You have rearranged the ranking.</string>
+    <string name="menu_view_ranking_rearrange_reset">Reset</string>
+    <string name="menu_float_view_ranking_remove_from_ranking">Remove From Ranking</string>
+    <string name="activity_view_ranking_remove_from_ranking_dialog_message">Are you sure you want to remove this song from ranking?</string>
+    <string name="activity_song_database_delete_song_toast_after">has been deleted.</string>
+    <string name="activity_view_ranking_remove_from_ranking_toast_after">has been removed.</string>
+    <string name="activity_view_ranking_remove_from_ranking_dialog_title">Remove Song from Ranking</string>
+    <string name="menu_song_database_finish_checking">Assign Checked Songs</string>
+    <string name="activity_song_database_assign_rank_done_toast">The selected song has been added to the chosen ranking.</string>
+    <string name="menu_song_database_assign_rank_back">Cancel Assign Rank</string>
+    <string name="activity_add_song_button_add_song_null_toast">Please enter something before adding.</string>
+    <string name="activity_add_song_button_edit_song_null_toast">Please enter something before making change.</string>
+    <string name="activity_add_ranking_button_add_ranking_null_toast">Please enter something before naming ranking.</string>
+    <string name="activity_rankings_delete_ranking_done_toast">and its ranked songs has been deleted.</string>
 
     <!-- NOT YET ARRANGED -->
 

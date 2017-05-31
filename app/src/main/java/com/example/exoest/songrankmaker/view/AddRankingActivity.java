@@ -23,9 +23,15 @@ public class AddRankingActivity extends AppCompatActivity {
 
     public void onClickButtonAddRanking(View view){
         String rankingName = editTextRankingName.getText().toString();
-        DBHandler db = new DBHandler(this, null, null, 1);
-        db.createRanking(new Ranking(rankingName));
-        Toast.makeText(this, "\"" + rankingName + "\" " + getString(R.string.activity_add_ranking_button_add_ranking_toast), Toast.LENGTH_LONG).show();
-        finish();
+
+        if (!rankingName.equals("")){
+            DBHandler db = new DBHandler(this, null, null, 1);
+            db.createRanking(new Ranking(rankingName));
+            Toast.makeText(this, "\"" + rankingName + "\" " + getString(R.string.activity_add_ranking_button_add_ranking_toast), Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            Toast.makeText(this, getString(R.string.activity_add_ranking_button_add_ranking_null_toast), Toast.LENGTH_LONG).show();
+        }
+
     }
 }

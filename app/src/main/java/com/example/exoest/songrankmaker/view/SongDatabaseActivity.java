@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseBooleanArray;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +17,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -23,7 +24,6 @@ import android.widget.Toast;
 import com.example.exoest.songrankmaker.R;
 import com.example.exoest.songrankmaker.controller.DBHandler;
 import com.example.exoest.songrankmaker.model.Ranking;
-import com.example.exoest.songrankmaker.model.RankingSong;
 import com.example.exoest.songrankmaker.model.Song;
 
 import java.util.ArrayList;
@@ -32,6 +32,11 @@ import java.util.List;
 public class SongDatabaseActivity extends AppCompatActivity {
     ListView listViewSongDatabase;
     List<Song> retrievedSongList = new ArrayList<Song>();
+    MenuItem menuItemAddSong;
+    MenuItem menuItemAssignRank;
+    MenuItem menuItemFinishChecking;
+    MenuItem menuItemAssignRankBack;
+    SongDatabaseListAdapter songDatabaseAdapter;
     private static boolean isSortArtist = false;
 
     @Override
@@ -51,6 +56,12 @@ public class SongDatabaseActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_song_database, menu);
+        menuItemAddSong = menu.findItem(R.id.menuItemAddSong);
+        menuItemAssignRank = menu.findItem(R.id.menuItemAssignRank);
+        menuItemFinishChecking = menu.findItem(R.id.menuItemFinishChecking);
+        menuItemAssignRankBack = menu.findItem(R.id.menuItemAssignRankBack);
+        menuItemFinishChecking.setVisible(false);
+        menuItemAssignRankBack.setVisible(false);
         return true;
     }
 
@@ -60,6 +71,15 @@ public class SongDatabaseActivity extends AppCompatActivity {
             case R.id.menuItemAddSong:
                 Intent intent = new Intent(this, AddSongActivity.class);
                 startActivity(intent);
+                return true;
+            case R.id.menuItemAssignRank:
+                changeToCheckableListForAssignRank();
+                return true;
+            case R.id.menuItemFinishChecking:
+                displayAssignToRankingDialog();
+                return true;
+            case R.id.menuItemAssignRankBack:
+                backFromAssignRank();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -77,9 +97,6 @@ public class SongDatabaseActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
-            case R.id.menuItemAssignRank:
-                displayAssignToRankingDialog(info);
-                return true;
             case R.id.menuItemEdit:
                 editSong(info);
                 return true;
@@ -98,18 +115,10 @@ public class SongDatabaseActivity extends AppCompatActivity {
         DBHandler db = new DBHandler(this, null, null, 1);
         retrievedSongList = db.retrieveAllSong(isArtistSort);
         if (!retrievedSongList.isEmpty()){
-            ListAdapter songDatabaseAdapter = new SongDatabaseListAdapter(this, R.layout.custom_row_song_database, retrievedSongList);
+            songDatabaseAdapter = new SongDatabaseListAdapter(this, R.layout.custom_row_song_database, retrievedSongList);
 //            final ListView listViewSongDatabase = (ListView) findViewById(R.id.listViewSongDatabase);
             listViewSongDatabase.setAdapter(songDatabaseAdapter);
             registerForContextMenu(findViewById(R.id.listViewSongDatabase));
-            listViewSongDatabase.setOnItemClickListener(
-                    new AdapterView.OnItemClickListener(){
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            listViewSongDatabase.showContextMenuForChild(view);
-                        }
-                    }
-            );
         }
     }
 
@@ -119,7 +128,32 @@ public class SongDatabaseActivity extends AppCompatActivity {
         refreshList(isSortArtist);
     }
 
-    public void displayAssignToRankingDialog(final AdapterView.AdapterContextMenuInfo info){
+    public void changeToCheckableListForAssignRank(){
+        menuItemFinishChecking.setEnabled(false);
+        menuItemAddSong.setVisible(false);
+        menuItemAssignRank.setVisible(false);
+        menuItemFinishChecking.setVisible(true);
+        menuItemAssignRankBack.setVisible(true);
+        unregisterForContextMenu(listViewSongDatabase);
+        listViewSongDatabase.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        listViewSongDatabase.setOnItemClickListener(new ListView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                songDatabaseAdapter.changeSelectionUponSelected(position);
+                if (songDatabaseAdapter.getItem(position).isSelected())
+                    view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_custom_row_song_database_darkblue));
+                else
+                    view.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.color_custom_row_song_database_lightblue));
+                listViewSongDatabase.setItemChecked(position, songDatabaseAdapter.getItem(position).isSelected());
+                if (listViewSongDatabase.getCheckedItemCount() != 0)
+                    menuItemFinishChecking.setEnabled(true);
+                else
+                    menuItemFinishChecking.setEnabled(false);
+            }
+        });
+    }
+
+    public void displayAssignToRankingDialog(){
         final AlertDialog.Builder assignToRankingDialog = new AlertDialog.Builder(this);
         assignToRankingDialog.setTitle("Assign Song to Ranking");
         assignToRankingDialog.setMessage("Select ranking :");
@@ -137,17 +171,16 @@ public class SongDatabaseActivity extends AppCompatActivity {
         spinnerRanking.setAdapter(adapter);
         spinnerRanking.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         assignToRankingDialog.setView(spinnerRanking);
-
+        assignToRankingDialog.setCancelable(false);
         assignToRankingDialog.setPositiveButton("Assign", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (spinnerRanking.getSelectedItemPosition() != 0){
-                    assignToRanking(info, rankingList.get(spinnerRanking.getSelectedItemPosition()-1));
+                    assignCheckedToRanking(rankingList.get(spinnerRanking.getSelectedItemPosition()-1));
+//                    Toast.makeText(SongDatabaseActivity.this, "You have already assigned to this ranking.", Toast.LENGTH_LONG).show();
                     dialog.dismiss();
-                } else {
+                } else
                     Toast.makeText(SongDatabaseActivity.this, "Please select a ranking.", Toast.LENGTH_LONG).show();
-                }
-
             }
         });
         assignToRankingDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -156,18 +189,29 @@ public class SongDatabaseActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-
         AlertDialog createDialog = assignToRankingDialog.create();
         createDialog.show();
     }
 
-    public void assignToRanking(AdapterView.AdapterContextMenuInfo info, Ranking rankingAssignTo){
-        Song songAssignFor = retrievedSongList.get(info.position);
+    public void assignCheckedToRanking(Ranking rankingAssignTo){
+        SparseBooleanArray sba = listViewSongDatabase.getCheckedItemPositions();
+        List<Song> songsForAssign = new ArrayList<>();
         DBHandler db = new DBHandler(this, null, null, 1);
-        RankingSong newRankingSong = new RankingSong(rankingAssignTo, songAssignFor, 0);
-        db.createRankingSong(newRankingSong);
-        Toast.makeText(this, "\"" + songAssignFor.get_name() + "\" has been assigned to \"" + rankingAssignTo.get_name() + "\".", Toast.LENGTH_LONG).show();
+        for (int i = 0; i < sba.size(); i++){
+            songsForAssign.add(retrievedSongList.get(sba.keyAt(i)));
+        }
+        db.createMultipleRankingSong(songsForAssign, rankingAssignTo);
+        Toast.makeText(this, getString(R.string.activity_song_database_assign_rank_done_toast), Toast.LENGTH_LONG).show();
+        backFromAssignRank();
+    }
+
+    public void backFromAssignRank(){
         refreshList(isSortArtist);
+        listViewSongDatabase.setOnItemClickListener(null);
+        menuItemAddSong.setVisible(true);
+        menuItemAssignRank.setVisible(true);
+        menuItemFinishChecking.setVisible(false);
+        menuItemAssignRankBack.setVisible(false);
     }
 
     public void editSong(AdapterView.AdapterContextMenuInfo info){
@@ -203,7 +247,7 @@ public class SongDatabaseActivity extends AppCompatActivity {
         Song songForDelete = retrievedSongList.get(info.position);
         DBHandler db = new DBHandler(this, null, null, 1);
         db.deleteSong(songForDelete.get_name());
-        Toast.makeText(this, "\"" + songForDelete.get_name() + "\" has been deleted.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "\"" + songForDelete.get_name() + "\" " + getString(R.string.activity_song_database_delete_song_toast_after), Toast.LENGTH_LONG).show();
         refreshList(isSortArtist);
     }
 

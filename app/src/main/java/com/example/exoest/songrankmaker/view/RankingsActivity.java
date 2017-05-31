@@ -181,8 +181,8 @@ public class RankingsActivity extends AppCompatActivity {
     public void deleteRanking(AdapterView.AdapterContextMenuInfo info){
         Ranking rankingForDelete = retrievedRankingList.get(info.position);
         DBHandler db = new DBHandler(this, null, null, 1);
-        db.deleteRanking(rankingForDelete.get_name());
-        Toast.makeText(this, "\"" + rankingForDelete.get_name() + "\" has been deleted.", Toast.LENGTH_LONG).show();
+        db.deleteRankingAndReferencedRecord(rankingForDelete.get_name());
+        Toast.makeText(this, "\"" + rankingForDelete.get_name() + "\" " + getString(R.string.activity_rankings_delete_ranking_done_toast), Toast.LENGTH_LONG).show();
         refreshRankingList(isRankingNameSort);
     }
 }

@@ -9,6 +9,7 @@ public class RankingSong {
     private Ranking _ranking;
     private Song _song;
     private int _rank;
+    private String _tempRank;
 
     public RankingSong() {
     }
@@ -54,5 +55,11 @@ public class RankingSong {
         this._rank = _rank;
     }
 
+    public String get_tempRank() {
+        return _tempRank;
+    }
 
+    public void set_tempRank(String _tempRank) {
+        this._tempRank = _tempRank;
+    }
 }

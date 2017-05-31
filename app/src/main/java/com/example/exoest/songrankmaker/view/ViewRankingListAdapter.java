@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,9 @@ public class ViewRankingListAdapter extends ArrayAdapter<RankingSong> {
         textViewViewRankingRankNumber.setText(String.valueOf(getItem(position).get_rank()));
         textViewViewRankingSongTitle.setText(getItem(position).get_song().get_name());
         textViewViewRankingSongArtist.setText(getItem(position).get_song().get_artist());
+
+        if ((position >= 0) && (position < 3))
+            viewRankingCustomView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_custom_row_song_database_darkblue));
 
         return viewRankingCustomView;
     }

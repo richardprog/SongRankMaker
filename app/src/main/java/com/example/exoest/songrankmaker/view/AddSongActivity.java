@@ -64,10 +64,14 @@ public class AddSongActivity extends AppCompatActivity {
         String songTitle = editTextSongTitle.getText().toString();
         String songArtist = editTextSongArtist.getText().toString();
 
-        DBHandler db = new DBHandler(this, null, null, 1);
-        Song newSong = new Song(songTitle, songArtist);
-        db.createSong(newSong);
-        Toast.makeText(this, "\"" + songTitle + "\" " + getString(R.string.activity_add_song_button_add_song_toast), Toast.LENGTH_LONG).show();
-        finish();
+        if (!songTitle.equals("") && !songArtist.equals("")){
+            DBHandler db = new DBHandler(this, null, null, 1);
+            Song newSong = new Song(songTitle, songArtist);
+            db.createSong(newSong);
+            Toast.makeText(this, "\"" + songTitle + "\" " + getString(R.string.activity_add_song_button_add_song_toast), Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            Toast.makeText(this, getString(R.string.activity_add_song_button_add_song_null_toast), Toast.LENGTH_LONG).show();
+        }
     }
 }

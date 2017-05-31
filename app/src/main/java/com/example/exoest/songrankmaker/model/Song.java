@@ -8,6 +8,7 @@ public class Song {
     private int _id;
     private String _name;
     private String _artist;
+    private boolean isSelected;
 
     public Song() {
     }
@@ -15,12 +16,14 @@ public class Song {
     public Song(String _name, String _artist) {
         this._name = _name;
         this._artist = _artist;
+        isSelected = false;
     }
 
     public Song(int _id, String _name, String _artist) {
         this._id = _id;
         this._name = _name;
         this._artist = _artist;
+        isSelected = false;
     }
 
     public int get_id() {
@@ -41,5 +44,13 @@ public class Song {
 
     public void set_artist(String _artist) {
         this._artist = _artist;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

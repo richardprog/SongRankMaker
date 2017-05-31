@@ -9,4 +9,25 @@
         android:title="@string/menu_song_database_add"
         android:visible="true"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/menuItemAssignRankBack"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_menu_revert"
+        android:title="@string/menu_song_database_assign_rank_back"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menuItemFinishChecking"
+        android:enabled="false"
+        android:icon="@android:drawable/ic_menu_send"
+        android:title="@string/menu_song_database_finish_checking"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menuItemAssignRank"
+        android:enabled="true"
+        android:icon="@android:drawable/checkbox_on_background"
+        android:title="@string/menu_song_database_assign_rank"
+        android:visible="true"
+        app:showAsAction="always" />
 </menu>

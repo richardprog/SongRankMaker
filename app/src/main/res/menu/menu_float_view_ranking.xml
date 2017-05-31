@@ -3,21 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menuItemEdit"
+        android:id="@+id/menuItemRemoveFromRanking"
         android:enabled="true"
-        android:orderInCategory="1"
-        android:title="@string/menu_float_song_database_edit"
-        android:visible="true" />
-    <item
-        android:id="@+id/menuItemDelete"
-        android:enabled="true"
-        android:orderInCategory="3"
-        android:title="@string/menu_float_song_database_delete"
+        android:title="@string/menu_float_view_ranking_remove_from_ranking"
         android:visible="true" />
     <item
         android:id="@+id/menuItemSearchInYoutube"
         android:enabled="true"
-        android:orderInCategory="2"
         android:title="@string/menu_float_song_database_search_in_youtube"
         android:visible="true" />
 </menu>
